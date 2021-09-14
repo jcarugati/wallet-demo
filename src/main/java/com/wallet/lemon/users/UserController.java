@@ -2,6 +2,7 @@ package com.wallet.lemon.users;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.wallet.lemon.movements.IMovementeService;
 import com.wallet.lemon.movements.Movement;
@@ -36,7 +37,10 @@ public class UserController {
     }
     
     @GetMapping(path = "")
-    public User index(@PathVariable("id") Integer userId, @RequestParam String alias) {
+    public User index(@PathVariable("id") Optional<Integer> userId, @RequestParam String alias) {
+        if (userId.isPresent()) {
+            return userService.getById(userId.get());
+        }
         return userService.getByAlias(alias);
     }
 

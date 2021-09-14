@@ -1,7 +1,7 @@
 version: '3.5'
 services:
     app-server:
-        container_name: app-server
+        container_name: app
         build:
             context: .
         image: wallet-server
