@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+    app-server:
+        container_name: app-server
+        build:
+            context: .
+        image: wallet-app-server
+        ports: 
+            - "8080:8080"
+            - "5005:5005"
+        depends_on: 
+            - database
+    database:
+        image: mysql:5.7
+        container_name: wallet-demo-database
+        environment:
+            MYSQL_ROOT_PASSWORD: testtest
+            MYSQL_DATABASE: wallet-db
+            MYSQL_USER: test
+            MYSQL_PASSWORD: testtest
+        ports:
+            - "3306:3306"
