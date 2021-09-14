@@ -1,6 +1,6 @@
 # LEMON
 
-### ERP
+### ERD
 
 ![image](./erd.png)
 
