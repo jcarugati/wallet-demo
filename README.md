@@ -139,3 +139,4 @@ Response example:
 - Missing some integration tests
 - Currently there's limited exception handling
 - Long build times
+- Initial data insertion in db
