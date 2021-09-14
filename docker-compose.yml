@@ -4,15 +4,18 @@ services:
         container_name: app-server
         build:
             context: .
-        image: wallet-app-server
+        image: wallet-server
         ports: 
             - "8080:8080"
             - "5005:5005"
         depends_on: 
-            - database
-    database:
+            wallet-database:
+                condition: service_healthy
+        networks:
+            - internal_net
+    wallet-database:
         image: mysql:5.7
-        container_name: wallet-demo-database
+        container_name: wallet-database
         environment:
             MYSQL_ROOT_PASSWORD: testtest
             MYSQL_DATABASE: wallet-db
@@ -20,3 +23,13 @@ services:
             MYSQL_PASSWORD: testtest
         ports:
             - "3306:3306"
+        networks: 
+            - internal_net
+        healthcheck:
+            test: "/etc/init.d/mysql status"
+            interval: 1s
+            retries: 120
+
+networks:
+    internal_net:
+        driver: bridge
