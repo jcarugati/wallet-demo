@@ -2,6 +2,8 @@ package com.wallet.lemon.users;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.wallet.lemon.movements.IMovementeService;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -36,12 +39,22 @@ public class UserController {
         return user;
     }
     
-    @GetMapping(path = "")
-    public User index(@PathVariable("id") Optional<Integer> userId, @RequestParam String alias) {
-        if (userId.isPresent()) {
-            return userService.getById(userId.get());
+    @GetMapping(path = { "/{id}", ""})
+    public User index(@PathVariable("id") Optional<Integer> userId, @RequestParam Optional<String> alias) {
+        if (userId.isEmpty() && alias.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "neither id or alias were provided");
         }
-        return userService.getByAlias(alias);
+        User user;
+        try {
+            if (userId.isPresent()) {
+            user = userService.getById(userId.get());
+            } else {
+                user = userService.getByAlias(alias.get());
+            }
+            return user; 
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "could not find user");
+        }
     }
 
     @GetMapping(path = "/{id}/movements")
